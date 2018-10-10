@@ -49,6 +49,11 @@ function login(){
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     login();
 }
+
+//退出登录状态清除session登录标识
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'logout') {
+    unset($_SESSION['cur_user']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">

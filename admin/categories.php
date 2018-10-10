@@ -28,11 +28,12 @@ function bx_add_category()
 }
 
 //修改分类
-function bx_mod_category(){
+function bx_mod_category()
+{
     global $cur_edit;
 
-    $name = empty($_POST['name'])? $cur_edit['name']: $_POST['name'];
-    $slug = empty($_POST['slug'])? $cur_edit['slug']: $_POST['slug'];
+    $name = empty($_POST['name']) ? $cur_edit['name'] : $_POST['name'];
+    $slug = empty($_POST['slug']) ? $cur_edit['slug'] : $_POST['slug'];
     $id = $cur_edit['id'];
 
     //更新页面数据
@@ -90,12 +91,13 @@ $categories = bx_fetch_all('select * from categories');
                         <h2>修改--<?php echo $cur_edit['name']; ?></h2>
                         <div class="form-group">
                             <label for="name">名称</label>
-                            <input id="name" class="form-control" name="name" type="text" value="<?php echo $cur_edit['name']; ?>" placeholder="分类名称">
+                            <input id="name" class="form-control" name="name" type="text"
+                                   value="<?php echo $cur_edit['name']; ?>" placeholder="分类名称">
                         </div>
                         <div class="form-group">
                             <label for="slug">别名</label>
-                            <input id="slug" class="form-control" name="slug" type="text" value="<?php echo $cur_edit['slug']; ?>" placeholder="slug">
-<!--                            <p class="help-block">https://zce.me/category/<strong>slug</strong></p>-->
+                            <input id="slug" class="form-control" name="slug" type="text"
+                                   value="<?php echo $cur_edit['slug']; ?>" placeholder="slug">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit">保存</button>
@@ -112,7 +114,6 @@ $categories = bx_fetch_all('select * from categories');
                         <div class="form-group">
                             <label for="slug">别名</label>
                             <input id="slug" class="form-control" name="slug" type="text" placeholder="slug">
-<!--                            <p class="help-block">https://zce.me/category/<strong>slug</strong></p>-->
                         </div>
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit">添加</button>
@@ -167,20 +168,10 @@ $categories = bx_fetch_all('select * from categories');
     let $allSel = $("#allSel");
     let selCount = []; //批量删除id的数组
 
+    //全选
     $allSel.on("change", function () {
         let flag = $(this).prop('checked');
-
-        for (let i = 0; i < $tbodyInput.length; i++) {
-            let that = $($tbodyInput[i]);
-
-            that.prop('checked', flag);
-            if (flag) {
-                selCount.push(that.data('id'));
-            }
-        }
-
-        if (!flag) selCount = [];
-        selCount.length > 0 ? $delAllBtn.fadeIn() : $delAllBtn.fadeOut();
+        $tbodyInput.prop('checked', flag).trigger('change'); //jquery批量操作
     });
 
     //CheckBox被选中时批量删除按钮出现
@@ -188,7 +179,8 @@ $categories = bx_fetch_all('select * from categories');
         let id = $(this).data('id');
 
         if ($(this).prop('checked')) {
-            selCount.push(id);
+            selCount.indexOf(id) === -1 || selCount.push(id); //如果数组中有id就不添加了
+            //selCount.includes(id) || selCount.push(id); //如果数组中有id就不添加了，include()ie8有兼容问题
         } else {
             selCount.splice(selCount.indexOf(id), 1);
         }

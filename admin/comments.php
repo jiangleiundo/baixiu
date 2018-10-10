@@ -33,13 +33,7 @@ bx_is_login();
                 <button class="btn btn-warning btn-sm">批量拒绝</button>
                 <button class="btn btn-danger btn-sm">批量删除</button>
             </div>
-            <ul class="pagination pagination-sm pull-right">
-                <li><a href="#">上一页</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">下一页</a></li>
-            </ul>
+            <ul class="pagination pagination-sm pull-right"></ul>
         </div>
         <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -53,44 +47,7 @@ bx_is_login();
                 <th class="text-center" width="100">操作</th>
             </tr>
             </thead>
-            <tbody>
-            <tr class="danger">
-                <td class="text-center"><input type="checkbox"></td>
-                <td>大大</td>
-                <td>楼主好人，顶一个</td>
-                <td>《Hello world》</td>
-                <td>2016/10/07</td>
-                <td>未批准</td>
-                <td class="text-center">
-                    <a href="post-add.php" class="btn btn-info btn-xs">批准</a>
-                    <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center"><input type="checkbox"></td>
-                <td>大大</td>
-                <td>楼主好人，顶一个</td>
-                <td>《Hello world》</td>
-                <td>2016/10/07</td>
-                <td>已批准</td>
-                <td class="text-center">
-                    <a href="post-add.php" class="btn btn-warning btn-xs">驳回</a>
-                    <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center"><input type="checkbox"></td>
-                <td>大大</td>
-                <td>楼主好人，顶一个</td>
-                <td>《Hello world》</td>
-                <td>2016/10/07</td>
-                <td>已批准</td>
-                <td class="text-center">
-                    <a href="post-add.php" class="btn btn-warning btn-xs">驳回</a>
-                    <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                </td>
-            </tr>
-            </tbody>
+            <tbody id="t_comments"></tbody>
         </table>
     </div>
 </div>
@@ -99,6 +56,60 @@ bx_is_login();
 
 <script src="/static/assets/vendors/jquery/jquery.js"></script>
 <script src="/static/assets/vendors/bootstrap/js/bootstrap.js"></script>
+<script src="/static/assets/vendors/jsrender/jsrender.min.js"></script><!--jsrender 模板引擎-->
+<script src="/static/assets/vendors/twbs-pagination/jquery.twbsPagination.js"></script><!--pagination 模板-->
+<script id="comment_temp" type="text/x-jsrender">
+{{for comments}}
+    <tr {{if status == 'held'}} class="warning" {{else status == 'rejected'}} class="danger" {{/if}}>
+        <td class="text-center"><input type="checkbox"></td>
+        <td>{{:author}}</td>
+        <td>{{:content}}</td>
+        <td>{{:posts_title}}</td>
+        <td>{{:created}}</td>
+        <td>{{if status == 'held'}}待审{{else status == 'rejected'}}拒绝{{else status == 'approved'}}同意 {{/if}}</td>
+        <td class="text-right" width="150">
+            {{if status == 'held'}}
+            <a href="" class="btn btn-info btn-xs">批准</a>
+            <a href="" class="btn btn-warning btn-xs">驳回</a>
+            {{/if}}
+            <a href="" class="btn btn-danger btn-xs">删除</a>
+        </td>
+    </tr>
+{{/for}}
+</script>
+<script>
+    $(document).ajaxStart(function (){
+        NProgress.start();
+    }).ajaxStop(function (){
+        NProgress.done();
+    });
+    //加载分页
+    function loadPage(page){
+        $.get('/admin/api/comments.php',{page: page}, function (res){
+
+            //分页
+            $(".pagination").twbsPagination({
+                totalPages: res.totalPage,
+                visiblePages: 5,
+                initiateStartPageClick: false,
+                first: '首页',
+                last: '尾页',
+                prev: '前一页',
+                next: '后一页',
+                onPageClick: function (e, page){
+                    //初始化时就会触发-通过设置initiateStartPageClick: false,解决初始化时不触发
+                    loadPage(page);
+                }
+            });
+
+            //jsrender模板引擎
+            let html = $("#comment_temp").render({ comments: res.comments});
+            $('#t_comments').html(html);
+        });
+    }
+
+    loadPage(1);
+</script>
 <script>NProgress.done()</script>
 </body>
 </html>

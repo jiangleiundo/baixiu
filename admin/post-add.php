@@ -26,7 +26,7 @@ bx_is_login();
         <!-- <div class="alert alert-danger">
           <strong>错误！</strong>发生XXX错误
         </div> -->
-        <form class="row">
+        <form class="row" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
             <div class="col-md-9">
                 <div class="form-group">
                     <label for="title">标题</label>
@@ -34,8 +34,9 @@ bx_is_login();
                 </div>
                 <div class="form-group">
                     <label for="content">标题</label>
-                    <textarea id="content" class="form-control input-lg" name="content" cols="30" rows="10"
-                              placeholder="内容"></textarea>
+<!--                    <textarea id="content" class="form-control input-lg" name="content" cols="30" rows="10"-->
+<!--                              placeholder="内容"></textarea>-->
+                    <script id="content" name="content" type="text/plain">编辑初始值</script>
                 </div>
             </div>
             <div class="col-md-3">
@@ -80,6 +81,14 @@ bx_is_login();
 
 <script src="/static/assets/vendors/jquery/jquery.js"></script>
 <script src="/static/assets/vendors/bootstrap/js/bootstrap.js"></script>
+<script src="/static/assets/vendors/UEditor/ueditor.config.js"></script>
+<script src="/static/assets/vendors/UEditor/ueditor.all.min.js"></script>
+<script>
+    //富文本编辑器
+    UE.getEditor('content', {
+        // initialFrameHeight: 360
+    });
+</script>
 <script>NProgress.done()</script>
 </body>
 </html>
