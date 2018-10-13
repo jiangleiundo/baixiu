@@ -85,6 +85,5 @@ function bx_execute($sql){
 
     //断开数据库链接
     mysqli_close($conn);
-    
     return $affected_row;
 }

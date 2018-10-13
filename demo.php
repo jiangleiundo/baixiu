@@ -20,7 +20,11 @@ echo $con;
 <a id="btn_delete" class="btn btn-danger btn-sm" href="/admin/category-delete.php">批量删除</a>
 <script src="static/assets/vendors/jquery/jquery.js"></script>
 
-
+<script>
+    let arr = [1,2,3];
+   console.log(arr.indexOf(1));
+   console.log(arr.indexOf(4) === -1);
+</script>
 
 
 

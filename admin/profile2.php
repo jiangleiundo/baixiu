@@ -26,8 +26,41 @@ function profile_mod()
     $GLOBALS['success'] = $rows > 0;
 }
 
+function mod_password()
+{
+    global $cur_user;
+
+    $id = $cur_user['id'];
+//    $old_pw = md5($_POST['pw1']);
+//    $new_pw = md5($_POST['pw2']);
+    $new_pw2 = md5($_POST['pwc']);
+
+//    if (empty($old_pw) || empty($new_pw) || empty($new_pw2)) {
+//        return;
+//    }
+//
+//    if ($new_pw !== $new_pw2) {
+//        $GLOBALS['msg'] = '两次密码不一致';
+//        return;
+//    }
+//
+//    if ($old_pw !== $cur_user['password']) {
+//        $GLOBALS['msg'] = '旧密码不正确';
+//        return;
+//    }
+
+    $rows = bx_execute("update users set password = '{$new_pw2}' where id = {$id};");
+
+    $GLOBALS['msg'] = $rows <= 0 ? '修改密码失败' : '修改密码成功';
+    $GLOBALS['success'] = $rows > 0;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    profile_mod();
+    if ($_GET['mod'] === 'password') {
+        mod_password();
+    } else {
+        profile_mod();
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -108,13 +141,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </form>
     </div>
+    <div class="bx-layer" style="display: none;">
+        <div class="alert alert-danger bx-layer-alert" style="display: none">
+            <strong>提示！</strong><span></span>
+        </div>
+        <form class="form-horizontal" id="bx_layer_form" action="<?php echo $_SERVER['PHP_SELF'] . '?mod=password'; ?>"
+              method="post">
+            <div class="form-group">
+                <label for="old" class="col-sm-3 control-label">旧密码</label>
+                <div class="col-sm-7">
+                    <input id="old" class="form-control" type="password" name="pw1" placeholder="旧密码">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-3 control-label">新密码</label>
+                <div class="col-sm-7">
+                    <input id="password" class="form-control" type="password" name="pw2" placeholder="新密码">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirm" class="col-sm-3 control-label">确认新密码</label>
+                <div class="col-sm-7">
+                    <input id="confirm" class="form-control" type="password" name="pwc" placeholder="确认新密码">
+                </div>
+            </div>
+            <!--            <div class="form-group">-->
+            <!--                <div class="col-sm-offset-3 col-sm-7">-->
+            <!--                    <button type="submit" class="btn btn-primary">修改密码</button>-->
+            <!--                </div>-->
+            <!--            </div>-->
+        </form>
+    </div>
 </div>
 <?php $cur_page = 'profile'; ?>
 <?php include('inc/sidebar.php'); ?>
 
 <script src="/static/assets/vendors/jquery/jquery.js"></script>
 <script src="/static/assets/vendors/bootstrap/js/bootstrap.js"></script>
+<script src="/static/assets/vendors/layer/layer.js"></script>
+<script src="/static/assets/js/md5.js"></script>
+<script src="/static/assets/js/common.js"></script>
 <script>
+    $('#mod_password').on('click', function () {
+        layer.open({
+            skin: 'layer-skin-bx',
+            title: '修改密码',
+            btn: '修改密码',
+            area: '500px',
+            content: $('.bx-layer').html(),
+            yes: function (index, layero) {
+                let old = layero.find('#old');
+                let password = layero.find('#password');
+                let confirm = layero.find('#confirm');
+
+                if (check_password(old, password, confirm)) {
+                    $('#bx_layer_form').submit();
+                    layer.close(index);
+                }
+            }
+        });
+    });
+
+    //检查密码
+    function check_password(old, password, confirm) {
+        let oldPw0 = $('#mod_password').attr('data-pw');
+        let oldPw = $(old).val();
+        let newPw = $(password).val();
+        let newPw2 = $(confirm).val();
+
+        if (!comm.isEmpty(oldPw) || comm.isEmpty(newPw) || comm.isEmpty(newPw2)) {
+            comm.tip('密码不能为空', '.bx-layer-alert');
+            return false;
+        }
+        if (newPw !== newPw2) {
+            comm.tip('两次密码不一致', '.bx-layer-alert');
+            return false;
+        }
+        if (hex_md5(oldPw) !== oldPw0) {
+            comm.tip('旧密码不正确', '.bx-layer-alert');
+            return false;
+        }
+
+        return true;
+    }
+
     $('#avatar').on('change', function () {
         let self = $(this);
         let files = self.prop('files');

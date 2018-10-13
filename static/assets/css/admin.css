@@ -270,8 +270,7 @@ body {
 
 .main .container-fluid .form-image {
   position: relative;
-
-  background-color: #fff;
+  background-color: #eee;
 }
 
 .main .container-fluid .form-image input {
@@ -296,6 +295,7 @@ body {
   background: #c0c0c0;
 
   font-size: 2em;
+  cursor: pointer;
 }
 
 .main .container-fluid .form-image i::before {
@@ -353,4 +353,10 @@ body {
 
 .alert {
   padding: 6px;
+}
+
+body .layer-skin-bx .layui-layer-btn .layui-layer-btn0{
+    background-color: #40586d;
+    border-color: #374b5d;
+    color: #fff;
 }

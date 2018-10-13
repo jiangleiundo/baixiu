@@ -11,7 +11,7 @@ comments.*,
 posts.title as posts_title
 from comments 
 inner join posts on comments.post_id = posts.id
-order by comments.created
+order by comments.created desc
 limit %d, %d', $offset, $size);
 
 $totalCount = bx_fetch_one('select count(1) as count
@@ -21,6 +21,8 @@ inner join posts on comments.post_id = posts.id;');
 $totalPage = (int)ceil($totalCount['count'] / $size);
 
 $comments = bx_fetch_all($sql);
+
+//返回一个关联数组
 $json = json_encode(array(
     'totalPage' => $totalPage,
     'comments' => $comments

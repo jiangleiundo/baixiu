@@ -179,7 +179,7 @@ $categories = bx_fetch_all('select * from categories');
         let id = $(this).data('id');
 
         if ($(this).prop('checked')) {
-            selCount.indexOf(id) === -1 || selCount.push(id); //如果数组中有id就不添加了
+            selCount.indexOf(id) === 0 || selCount.push(id); //如果数组中有id就不添加了
             //selCount.includes(id) || selCount.push(id); //如果数组中有id就不添加了，include()ie8有兼容问题
         } else {
             selCount.splice(selCount.indexOf(id), 1);
