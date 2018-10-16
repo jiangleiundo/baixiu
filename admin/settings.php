@@ -1,6 +1,9 @@
-<?php
+<?php header('Content-type: text/html; charset=utf-8');
 require_once ('../common.php');
 bx_is_login();
+
+$setting = bx_fetch_all('select * from options');
+
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">

@@ -126,6 +126,7 @@ bx_is_login();
             let html = $("#comment_temp").render({comments: res.comments});
             $t_comments.html(html);
 
+            //批量操作-刷新页面时候先隐藏批量操作按钮
             $('.btn-batch').fadeOut();
             batch();
         });
